@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Kasir Kampung Coffe (Raja)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+*{box-sizing:border-box;font-family:Arial,Helvetica,sans-serif}
+body{margin:0;background:#f4f4f4}
+header{background:#6f4e37;color:#fff;padding:12px;text-align:center;font-weight:bold}
+nav{display:flex;overflow-x:auto;background:#fff;border-bottom:1px solid #ddd}
+nav div{padding:10px 14px;cursor:pointer;white-space:nowrap}
+nav .active{border-bottom:3px solid #6f4e37;color:#6f4e37;font-weight:bold}
+.page{display:none;padding:12px}
+.page.active{display:block}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px}
+.item{background:#fff;border-radius:10px;padding:12px;text-align:center;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.1)}
+.item span{display:block;margin-top:6px;font-weight:bold}
+.row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #eee}
+input,button{width:30%;padding:8px;margin:6px 0}
+button{border:none;border-radius:6px;cursor:pointer}
+.primary{background:#6f4e37;color:#fff}
+
+
+button.danger{
+ background:#e53935;
+ color:#fff;
+ border:none;
+ padding:4px 8px;
+ border-radius:6px;
+ cursor:pointer;
+}
+.row{
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+}
+
+
+.item {
+  border:1px solid #ddd;
+  padding:10px;
+  border-radius:8px;
+  text-align:center;
+  cursor:pointer;
+}
+.item img {
+  width:100%;
+  height:90px;
+  object-fit:cover;
+  border-radius:6px;
+}
+.item .name {
+  margin:6px 0;
+  font-weight:600;
+}
+
+
+
+/* ===== MODAL STRUK ===== */
+#modalStruk{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.45);
+  z-index:999;
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+  padding-top:30px;
+}
+
+#modalStruk .box{
+  width:320px;
+  background:#fff;
+  border-radius:12px;
+  padding:14px;
+  font-size:12px;
+  line-height:1.4;
+  box-shadow:0 8px 20px rgba(0,0,0,.25);
+}
+
+/* ===== HEADER STRUK ===== */
+.struk-header{
+  text-align:center;
+}
+.struk-header img{
+  width:64px;
+  margin-bottom:6px;
+}
+.struk-header b{
+  font-size:14px;
+}
+.struk-header .alamat{
+  font-size:11px;
+  color:#555;
+}
+
+/* ===== GARIS ===== */
+.struk-line{
+  border-top:1px dashed #000;
+  margin:8px 0;
+}
+
+/* ===== INFO ===== */
+.struk-info{
+  font-size:12px;
+}
+.struk-info div{
+  display:flex;
+  justify-content:space-between;
+}
+
+/* ===== ITEM ===== */
+.struk-items{
+  margin-top:6px;
+}
+.struk-item{
+  display:flex;
+  justify-content:space-between;
+  font-size:12px;
+  margin-bottom:4px;
+}
+.struk-item .qty{
+  font-size:11px;
+  color:#444;
+}
+
+/* ===== TOTAL ===== */
+.struk-total{
+  display:flex;
+  justify-content:space-between;
+  font-weight:bold;
+  font-size:13px;
+}
+
+/* ===== FOOTER ===== */
+.struk-footer{
+  text-align:center;
+  font-size:11px;
+  margin-top:8px;
+  color:#444;
+}
+
+/* ===== BUTTON ===== */
+.struk-btn{
+  width:100%;
+  margin-top:10px;
+  padding:8px;
+  border:none;
+  border-radius:8px;
+  background:#6f4e37;
+  color:#fff;
+  font-weight:bold;
+  cursor:pointer;
+}
+.struk-btn:hover{
+  opacity:.9;
+}
+
+
+.struk-header{
+  text-align:center;
+  font-family:"Courier New", monospace;
+}
+
+.struk-logo{
+  display:block;
+  margin:0 auto 6px;
+  width:70px;
+  border-radius: 10px;
+}
+
+.struk-title{
+  font-size:14px;
+  font-weight:bold;
+  letter-spacing:1px;
+  margin-bottom:2px;
+}
+
+.struk-alamat{
+  font-size:11px;
+}
+
+
+.struk-time{
+  font-size:11px;
+  margin:4px 0 6px;
+}
+
+
+
+button.danger{
+  background:#ff4d4f;
+  color:#fff;
+  border:none;
+  padding:6px 10px;
+  border-radius:6px;
+  cursor:pointer;
+}
+
+button.danger:hover{
+  opacity:.85;
+}
+
+.row{
+  display:flex;
+  justify-content:space-between;
+  padding:6px 0;
+  border-bottom:1px dashed #ccc;
+}
+
+
+
+
+
+button.danger{
+  background:#ff4d4f;
+  color:#fff;
+  border:none;
+  padding:6px 10px;
+  border-radius:6px;
+  cursor:pointer;
+}
+
+button.danger:hover{
+  opacity:.85;
+}
+
+.row{
+  display:flex;
+  justify-content:space-between;
+  padding:6px 0;
+  border-bottom:1px dashed #ccc;
+}
+
+
+
+
+
+
+
+
+
+
+/* BOX ORDER */
+.order-box{
+  background:#fff;
+  padding:12px;
+  border-radius:12px 12px 0 0;
+  box-shadow:0 -3px 12px rgba(0,0,0,.2);
+}
+
+/* 🔥 BEKU DI BAWAH (TIDAK SCROLL) */
+.order-box.fixed{
+  position:fixed;
+  bottom:0;
+  left:0;
+  width:100%;
+  z-index:999;
+}
+
+/* supaya menu tidak ketutup box */
+#menu{
+  padding-bottom:9000px;
+}
+
+.order-box input{
+  width:100%;
+  padding:10px;
+  margin-bottom:8px;
+  border-radius:8px;
+  border:1px solid #ddd;
+}
+
+.order-box .total{
+  display:flex;
+  justify-content:space-between;
+  font-weight:bold;
+  margin:10px 0;
+}
+
+
+
+/* cart di dalam box */
+#cart{
+  max-height:120px;      /* ⬅️ KUNCI UTAMA */
+  overflow-y:auto;
+  margin:8px 0;
+}
+
+/* sembunyikan scrollbar jelek (opsional) */
+#cart::-webkit-scrollbar{
+  width:4px;
+}
+#cart::-webkit-scrollbar-thumb{
+  background:#ccc;
+  border-radius:4px;
+}
+
+
+.order-box.fixed{
+  max-height:45vh;       /* ⬅️ TIDAK BOLEH FULL */
+  overflow:hidden;
+}
+
+
+.item .price{
+  color:#2e7d32;       /* hijau kasir */
+  font-weight:bold;
+  font-size:14px;
+}
+
+
+
+
+.app-header{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:10px 14px;
+  background:#6f4e37;
+  color:#fff;
+  font-weight:bold;
+}
+
+.app-header .logo{
+  width:32px;
+  height:32px;
+  object-fit:contain;
+  border-radius: 10px;
+}
+
+.app-header .title{
+  font-size:16px;
+  letter-spacing:.5px;
+}
+
+
+
+
+
+
+.uang-box{
+  background:#fff;
+  border-radius:12px;
+  padding:14px;
+  box-shadow:0 2px 8px rgba(0,0,0,.12);
+}
+
+.uang-box h3{
+  margin-top:0;
+  margin-bottom:10px;
+}
+
+.uang-row{
+  display:flex;
+  justify-content:space-between;
+  padding:6px 0;
+  border-bottom:1px dashed #ddd;
+}
+
+.saldo-box{
+  margin-top:12px;
+  padding:12px;
+  background:#e8f5e9;
+  border:2px solid #2e7d32;
+  border-radius:10px;
+  display:flex;
+  justify-content:space-between;
+  font-size:16px;
+  font-weight:bold;
+  color:#2e7d32;
+}
+
+
+
+
+
+
+
+
+
+
+
+</style>
+</head>
+<body>
+
+<header class="app-header">
+  <img src="logo.jpg" class="logo">
+  <span class="title">Kampung Coffee</span>
+</header>
+
+<nav id="nav"></nav>
+<div id="menu" class="page active"></div>
+<div id="belum" class="page"></div>
+<div id="sudah" class="page"></div>
+<div id="analisis" class="page"></div>
+<div id="uang" class="page"></div>
+<div id="nav6" class="page"></div>
+<div id="nav7" class="page"></div>
+<div id="nav8" class="page"></div>
+<div id="nav9" class="page"></div>
+<div id="nav10" class="page"></div>
+
+
+
+<div id="modalBayar" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.4)">
+  <div style="background:#fff;max-width:400px;margin:60px auto;padding:16px;border-radius:10px">
+    <h3>Detail Pembayaran</h3>
+
+    <div id="detailOrder"></div>
+
+    <hr>
+    <b>Total: Rp <span id="totalBayar">0</span></b>
+
+    <input id="uangPelanggan" type="number" placeholder="Uang Pelanggan">
+    <input id="kembalian" placeholder="Kembalian" disabled>
+
+    <button class="primary" onclick="prosesBayar()">Bayar Sekarang</button>
+    <button onclick="tutupBayar()">Batal</button>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div id="modalStruk" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:99">
+  <div style="background:#fff;width:320px;margin:40px auto;padding:14px;border-radius:10px;font-size:12px">
+    
+<div class="struk-header">
+  <img src="logo.jpg" class="struk-logo">
+  <div class="struk-title">KAMPUNG COFFE</div>
+  <div id="strukTime" class="struk-time"></div>
+  <div class="struk-alamat">
+    Alamat : Dusun Bangunan, Tanjung Putus
+  </div>
+</div>
+
+
+
+    <hr>
+
+    <div id="strukInfo"></div>
+
+    <hr>
+    <b>DETAIL PESANAN</b>
+    <div id="strukItems"></div>
+
+    <hr>
+    <div id="strukTotal"></div>
+
+    <hr>
+    <div style="text-align:center;font-size:11px">
+      Dev: ilhamkrt
+    </div>
+
+    <button class="primary" style="width:100%;margin-top:10px" onclick="tutupStruk()">Tutup</button>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script type="module">
+// ================= FIREBASE =================
+import { deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, addDoc, query, where, onSnapshot, updateDoc, doc, Timestamp, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSy....",
+  authDomain: "users-96dc5.firebaseapp.com",
+  projectId: "users-96dc5",
+  storageBucket: "users-96dc5.appspot.com",
+  messagingSenderId: "483322415863",
+  appId: "1:483322415863:web:xxxxxx"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// ================= NAV =================
+const navs=[
+ ['menu','Menu'],['belum','Belum Bayar'],['sudah','Sudah Bayar'],['analisis','Analisis'],['uang','Uang Masuk'],
+ ['nav6','Promo'],['nav7','Stok'],['nav8','Kasir'],['nav9','Pengaturan'],['nav10','Tentang']
+];
+const navEl=document.getElementById('nav');
+navs.forEach((n,i)=>{
+ const d=document.createElement('div');
+ d.innerText=n[1];
+ d.onclick=()=>showPage(n[0],d);
+ if(i==0)d.classList.add('active');
+ navEl.appendChild(d);
+});
+
+function showPage(id,el){
+ document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+ document.getElementById(id).classList.add('active');
+ document.querySelectorAll('nav div').forEach(n=>n.classList.remove('active'));
+ el.classList.add('active');
+}
+
+// ================= MENU & CART =================
+// ================= MENU & CART =================
+const menuData = [
+  { name:"Espresso",   price:15000, image:"espresso.jpg" },
+  { name:"Americano",  price:18000, image:"delicious-beverage.jpg" },
+  { name:"Cappuccino", price:22000, image:"cappuccino-beans-table.jpg" },
+  { name:"Latte",      price:23000, image:"spiced-cardamom-latte.jpg" },
+  { name:"Mocha",      price:25000, image:"delicious-beverage.jpg" },
+  { name:"Tea",        price:12000, image:"tea.jpg" },
+  { name:"Chocolate",  price:24000, image:"delicious-beverage.jpg" },
+  { name:"Croissant",  price:18000, image:"croissants.jpg" },
+  { name:"Sandwich",   price:20000, image:"delicious-beverage.jpg" },
+  { name:"Sanger Panas",   price:12000, image:"espresso.jpg" },
+  { name:"Donut",      price:10000, image:"donut.jpg" }
+];
+
+let cart = {};
+let total = 0;
+
+// 🔑 STATE PELANGGAN (INI KUNCI PERBAIKAN)
+let customer = {
+  nama: '',
+  meja: ''
+};
+
+function renderMenu(){
+ const m = document.getElementById('menu');
+
+
+m.innerHTML = `
+  <h3>Menu</h3>
+  <div class="grid" id="grid"></div>
+
+  <div class="order-box fixed">
+    <input id="nama" placeholder="Nama Pelanggan" value="${customer.nama}">
+    <input id="meja" placeholder="Nomor Meja" value="${customer.meja}">
+
+    <div id="cart"></div>
+
+    <div class="total">
+      <span>Total</span>
+      <span>Rp ${total.toLocaleString()}</span>
+    </div>
+
+    <button class="primary" id="btnCatat">Catat</button>
+  </div>
+`;
+
+ 
+
+ // simpan input ke state
+ document.getElementById('nama').oninput = e => customer.nama = e.target.value;
+ document.getElementById('meja').oninput = e => customer.meja = e.target.value;
+
+ const g = document.getElementById('grid');
+menuData.forEach(x=>{
+  const d = document.createElement('div');
+  d.className = 'item';
+d.innerHTML = `
+  <img src="${x.image}" alt="${x.name}">
+  <div class="name">${x.name}</div>
+  <span class="price">Rp${x.price.toLocaleString()}</span>
+`;
+  d.onclick = ()=>tambahMenu(x.name, x.price);
+  g.appendChild(d);
+});
+
+ const c = document.getElementById('cart');
+c.innerHTML = '';
+
+Object.keys(cart).reverse().forEach(i=>{
+  c.innerHTML += `
+    <div class="row">
+      <span>${i} x${cart[i].q}</span>
+      <span>Rp${cart[i].q*cart[i].h}</span>
+    </div>
+  `;
+});
+
+ document.getElementById('btnCatat').onclick = simpanOrder;
+}
+
+// ➕ TAMBAH MENU (TIDAK RESET INPUT)
+function tambahMenu(nama,harga){
+ if(!cart[nama]) cart[nama] = { q:0, h:harga };
+ cart[nama].q++;
+ total += harga;
+ renderMenu();
+}
+
+// 💾 SIMPAN ORDER
+async function simpanOrder(){
+ if(!customer.nama || !customer.meja || total === 0){
+  alert('Lengkapi data');
+  return;
+ }
+
+ const items = Object.keys(cart).map(k=>({
+  nama: k,
+  qty: cart[k].q,
+  harga: cart[k].h
+ }));
+
+ await addDoc(collection(db,'orders'),{
+  nama: customer.nama,
+  meja: customer.meja,
+  items,
+  total,
+  status: 'belum',
+  createdAt: Timestamp.now()
+ });
+
+ // RESET SETELAH CATAT
+ cart = {};
+ total = 0;
+ customer = { nama:'', meja:'' };
+ renderMenu();
+}
+
+// INIT
+renderMenu();
+
+
+window.hapusOrder = async function(id){
+ if(!confirm('Yakin hapus order ini?')) return;
+ await deleteDoc(doc(db,'orders',id));
+}
+
+
+
+let bayarId = null;
+let bayarTotal = 0;
+
+
+
+// ================= BELUM BAYAR =================
+// ================= BELUM BAYAR =================
+onSnapshot(
+ query(collection(db,'orders'), where('status','==','belum')),
+ snap=>{
+  const b = document.getElementById('belum');
+  b.innerHTML = '<h3>Belum Bayar</h3>';
+
+  snap.docs.slice().reverse().forEach(d=>{
+   const o = d.data();
+   b.innerHTML += `
+     <div class="row">
+      <span onclick='bukaBayar(${JSON.stringify({...o, id:d.id})})'>
+         ${o.nama} - Meja ${o.meja}
+         <b>Rp${o.total}</b>
+       </span>
+       <button class="danger" onclick="hapusOrder('${d.id}')">🗑</button>
+     </div>
+   `;
+  });
+ }
+);
+
+
+
+window.bukaBayar = function(order){
+  bayarId = order.id;
+  bayarTotal = order.total;
+
+  const detail = document.getElementById('detailOrder');
+  detail.innerHTML = '';
+
+  order.items.forEach(i=>{
+    detail.innerHTML += `
+      <div class="row">
+        <span>${i.nama} x${i.qty}</span>
+        <span>Rp${(i.qty*i.harga).toLocaleString()}</span>
+      </div>
+    `;
+  });
+
+  document.getElementById('totalBayar').innerText =
+    order.total.toLocaleString();
+
+  document.getElementById('uangPelanggan').value = '';
+  document.getElementById('kembalian').value = '';
+
+  document.getElementById('modalBayar').style.display='block';
+}
+
+
+
+document.getElementById('uangPelanggan').oninput = function(){
+  const uang = Number(this.value);
+  document.getElementById('kembalian').value =
+    uang >= bayarTotal ? uang - bayarTotal : '';
+}
+
+
+
+// ================= BAYAR =================
+window.prosesBayar = async function(){
+  const uang = Number(document.getElementById('uangPelanggan').value);
+  if(uang < bayarTotal){
+    alert('Uang pelanggan kurang');
+    return;
+  }
+
+  await updateDoc(doc(db,'orders',bayarId),{
+    status:'sudah',
+    paidAt: Timestamp.now(),
+    uangPelanggan: uang,
+    kembalian: uang - bayarTotal
+  });
+
+  tutupBayar();
+}
+
+
+
+window.tutupBayar = function(){
+  document.getElementById('modalBayar').style.display='none';
+}
+
+
+
+
+function formatWaktu(ts){
+  let d;
+
+  // Firestore Timestamp asli
+  if (ts && typeof ts.toDate === 'function') {
+    d = ts.toDate();
+  }
+  // Timestamp hasil JSON.stringify
+  else if (ts && ts.seconds) {
+    d = new Date(ts.seconds * 1000);
+  }
+  // fallback
+  else {
+    return '-';
+  }
+
+  const pad = n => n.toString().padStart(2,'0');
+
+  return `${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()}
+  ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+}
+// ================= SUDAH BAYAR =================
+// ================= SUDAH BAYAR =================
+onSnapshot(
+ query(collection(db,'orders'), where('status','==','sudah')),
+ snap=>{
+  const s = document.getElementById('sudah');
+  s.innerHTML = '<h3>Sudah Bayar</h3>';
+
+  snap.docs.slice().reverse().forEach(d=>{
+   const o = d.data();
+   s.innerHTML += `
+     <div class="row">
+<span style="cursor:pointer" onclick='lihatStruk(${JSON.stringify({
+  id:d.id,
+  ...o
+}).replace(/'/g,"\\'")})'>
+  ${o.nama} - Meja ${o.meja}
+  <b>Rp${o.total}</b>
+</span>
+
+       <button class="danger" onclick="hapusOrder('${d.id}')">🗑</button>
+     </div>
+   `;
+  });
+ }
+);
+
+
+let nomorReff = 1;
+
+window.lihatStruk = function(o){
+  const info = document.getElementById('strukInfo');
+  const items = document.getElementById('strukItems');
+  const total = document.getElementById('strukTotal');
+
+  info.innerHTML = `
+    Nama Pelanggan : ${o.nama}<br>
+    Reff : ${String(nomorReff).padStart(3,'0')}<br>
+    -------------------<br>
+    No Meja : ${o.meja}<br>
+    PPN : Rp 0
+  `;
+
+document.getElementById('strukTime').innerText =
+  o.paidAt ? formatWaktu(o.paidAt) : '-';
+
+
+  
+  items.innerHTML = '';
+  o.items.forEach(i=>{
+    items.innerHTML += `
+      <div class="row">
+        <span>${i.nama} x${i.qty}</span>
+        <span>Rp${(i.qty*i.harga).toLocaleString()}</span>
+      </div>
+    `;
+  });
+
+  total.innerHTML = `
+    <b>Total : Rp${o.total.toLocaleString()}</b>
+  `;
+
+  document.getElementById('modalStruk').style.display='block';
+
+  nomorReff++;
+}
+
+window.tutupStruk = function(){
+  document.getElementById('modalStruk').style.display='none';
+}
+
+
+
+
+let totalMasuk = 0;
+let totalTarik = 0;
+
+
+onSnapshot(collection(db,'orders'), snap => {
+  totalMasuk = 0;
+  let belum = 0;
+
+  snap.forEach(d=>{
+    const o = d.data();
+    if(o.status === 'belum') belum += o.total;
+    if(o.status === 'sudah') totalMasuk += o.total;
+  });
+
+  document.getElementById('analisis').innerHTML = `
+    <h3>Analisis</h3>
+    <p>Belum Bayar: Rp${belum.toLocaleString()}</p>
+    <p>Sudah Bayar: Rp${totalMasuk.toLocaleString()}</p>
+  `;
+
+  renderUang();
+});
+
+
+
+
+onSnapshot(
+  query(collection(db,'withdraws'), orderBy('waktu','desc')),
+  snap=>{
+    totalTarik = 0;
+    const h = document.getElementById('historyTarik');
+    if(h) h.innerHTML = '';
+
+    snap.forEach(d=>{
+      const w = d.data();
+      totalTarik += w.jumlah;
+
+      if(h){
+        h.innerHTML += `
+          <div class="row">
+            <span>
+              Tarik Rp${w.jumlah.toLocaleString()}<br>
+              <small>${w.keterangan || '-'}</small><br>
+              <small>${formatWaktu(w.waktu)}</small>
+            </span>
+          </div>
+        `;
+      }
+    });
+
+    renderUang();
+  }
+);
+
+
+function renderUang(){
+  const saldo = totalMasuk - totalTarik;
+
+document.getElementById('uang').innerHTML = `
+  <div class="uang-box">
+    <h3>Uang Masuk</h3>
+
+    <div class="uang-row">
+      <span>Total Masuk</span>
+      <b>Rp${totalMasuk.toLocaleString()}</b>
+    </div>
+
+    <div class="uang-row">
+      <span>Total Ditarik</span>
+      <b>Rp${totalTarik.toLocaleString()}</b>
+    </div>
+
+    <div class="saldo-box">
+      <span>Saldo Akhir</span>
+      <b>Rp${saldo.toLocaleString()}</b>
+    </div>
+  </div>
+
+
+    <hr>
+
+    <h4>Tarik Hasil</h4>
+    <input id="tarikJumlah" type="number" placeholder="Jumlah penarikan">
+    <input id="tarikKet" type="text" placeholder="Keterangan">
+    <button class="primary" onclick="tarikHasil()">Tarik</button>
+
+    <hr>
+
+    <h4>History Penarikan</h4>
+    <div id="historyTarik"></div>
+  `;
+}
+
+
+window.tarikHasil = async function(){
+  const jml = Number(document.getElementById('tarikJumlah').value);
+  const ket = document.getElementById('tarikKet').value;
+
+  const saldo = totalMasuk - totalTarik;
+
+  if(!jml || jml <= 0){
+    alert('Masukkan jumlah valid');
+    return;
+  }
+
+  if(jml > saldo){
+    alert('Saldo tidak mencukupi');
+    return;
+  }
+
+  await addDoc(collection(db,'withdraws'),{
+    jumlah: jml,
+    keterangan: ket,
+    waktu: Timestamp.now()
+  });
+
+  document.getElementById('tarikJumlah').value = '';
+  document.getElementById('tarikKet').value = '';
+};
+
+onSnapshot(
+  query(collection(db,'withdraws'), orderBy('waktu','desc')),
+  snap => {
+    const h = document.getElementById('historyTarik');
+    if(!h) return;
+
+    h.innerHTML = '';
+    snap.forEach(d => {
+      const w = d.data();
+      h.innerHTML += `
+        <div class="row" style="justify-content:space-between">
+          <span>
+            <b>Rp${w.jumlah.toLocaleString()}</b><br>
+            <small>${w.keterangan}</small><br>
+            <small>${formatWaktu(w.waktu)}</small>
+          </span>
+          <button class="danger" onclick="hapusTarik('${d.id}')">🗑</button>
+        </div>
+      `;
+    });
+  }
+);
+
+
+
+const PIN_DELETE = '1234';
+
+
+window.hapusTarik = async function(id){
+  const pin = prompt('Masukkan PIN untuk menghapus data');
+
+  if(pin === null) return;
+
+  if(pin !== PIN_DELETE){
+    alert('PIN salah');
+    return;
+  }
+
+  await deleteDoc(doc(db,'withdraws', id));
+  alert('Data penarikan dihapus');
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+renderMenu();
+</script>
+</body>
+</html>
