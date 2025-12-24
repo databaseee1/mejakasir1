@@ -451,6 +451,83 @@ button.danger:hover{
 
 
 
+#belumTotalBox{
+  background: #fff;
+  border-radius: 12px;
+  padding: 14px 18px;
+  margin-bottom: 14px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  text-align: center;
+}
+
+#belumOrderBox{
+  background: #fff;
+  border-radius: 12px;
+  padding: 10px 16px;
+  margin-bottom: 10px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+#belumOrderBox:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 5px 14px rgba(0,0,0,0.1);
+}
+
+.belumOrderItem{
+  flex: 1;
+}
+
+
+
+
+
+
+
+#sudahTotalBox{
+  background: #bdefc6;
+  border-radius: 12px;
+  padding: 14px 18px;
+  margin-bottom: 14px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  text-align: center;
+  font-weight: 600;
+}
+
+#sudahOrderBox{
+  background: #fff;
+  border-radius: 12px;
+  padding: 10px 16px;
+  margin-bottom: 10px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+#sudahOrderBox:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 5px 14px rgba(0,0,0,0.1);
+}
+
+.sudahOrderItem{
+  flex: 1;
+}
+
+
+.sudahHeader {
+  color: green;
+  font-weight: 600; /* opsional biar lebih tebal */
+}
+
+
+
 
 </style>
 </head>
@@ -828,24 +905,29 @@ onSnapshot(
     const jumlahBelum = snap.docs.length; // jumlah order belum bayar
 
     // Header dengan total & jumlah belum bayar
-    b.innerHTML = `
-      <h3>Belum Bayar</h3>
-      <p>Total Belum Bayar: <b style="color:red">Rp${totalBelumBayar.toLocaleString()}</b></p>
-    `;
+// Header Total Belum Bayar dalam box
+b.innerHTML = `
+  <div id="belumTotalBox">
+    <h3>Belum Bayar</h3>
+    <p><b style="color:red">TOTAL BELUM BAYAR:</b> Rp${totalBelumBayar.toLocaleString()}</p>
+  </div>
+`;
 
-    // Render daftar order
-    snap.docs.slice().reverse().forEach(d => {
-      const o = d.data();
-      b.innerHTML += `
-        <div class="row">
-          <span onclick='bukaBayar(${JSON.stringify({...o, id:d.id})})'>
-            ${o.nama} - Meja ${o.meja} 
-            <b>Rp${o.total.toLocaleString()}</b>
-          </span>
-          <button class="danger" onclick="hapusOrder('${d.id}')">🗑</button>
-        </div>
-      `;
-    });
+// Render daftar order dalam box masing-masing
+snap.docs.slice().reverse().forEach(d => {
+  const o = d.data();
+  b.innerHTML += `
+    <div id="belumOrderBox">
+      <span onclick='bukaBayar(${JSON.stringify({...o, id:d.id})})' class="belumOrderItem">
+        ${o.nama} - Meja ${o.meja} 
+        <b>Rp${o.total.toLocaleString()}</b>
+      </span>
+      <button class="danger" onclick="hapusOrder('${d.id}')">🗑</button>
+    </div>
+  `;
+});
+
+
 
     // Opsional: update badge navigasi
     if(typeof renderNav === 'function') renderNav(jumlahBelum);
@@ -943,24 +1025,27 @@ onSnapshot(
  query(collection(db,'orders'), where('status','==','sudah')),
  snap=>{
   const s = document.getElementById('sudah');
-  s.innerHTML = '<h3>Sudah Bayar</h3>';
+// Header Sudah Bayar dalam box
+s.innerHTML = `
+  <div id="sudahTotalBox">
+    <h3 class="sudahHeader">Sudah Bayar</h3>
 
-  snap.docs.slice().reverse().forEach(d=>{
-   const o = d.data();
-   s.innerHTML += `
-     <div class="row">
-<span style="cursor:pointer" onclick='lihatStruk(${JSON.stringify({
-  id:d.id,
-  ...o
-}).replace(/'/g,"\\'")})'>
-  ${o.nama} - Meja ${o.meja}
-  <b>Rp${o.total}</b>
-</span>
+  </div>
+`;
 
-       <button class="danger" onclick="hapusOrder('${d.id}')">🗑</button>
-     </div>
-   `;
-  });
+// Render daftar order Sudah Bayar dalam box masing-masing
+snap.docs.slice().reverse().forEach(d => {
+  const o = d.data();
+  s.innerHTML += `
+    <div id="sudahOrderBox">
+      <span onclick='lihatStruk(${JSON.stringify({...o, id:d.id}).replace(/'/g,"\\'")})' class="sudahOrderItem">
+        ${o.nama} - Meja ${o.meja} 
+        <b>Rp${o.total.toLocaleString()}</b>
+      </span>
+      <button class="danger" onclick="hapusOrder('${d.id}')">🗑</button>
+    </div>
+  `;
+});
  }
 );
 
