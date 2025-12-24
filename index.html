@@ -17,7 +17,7 @@ nav .active{border-bottom:3px solid #6f4e37;color:#6f4e37;font-weight:bold}
 .item{background:#fff;border-radius:10px;padding:12px;text-align:center;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.1)}
 .item span{display:block;margin-top:6px;font-weight:bold}
 .row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #eee}
-input,button{width:30%;padding:8px;margin:6px 0}
+input,button{width:30%;padding:8px;border-radius: 10px; margin:6px 0}
 button{border:none;border-radius:6px;cursor:pointer}
 .primary{background:#6f4e37;color:#fff}
 
@@ -529,6 +529,45 @@ button.danger:hover{
 
 
 
+
+
+
+
+.custom-alert {
+  display: none; /* sembunyiin default */
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #8a5353; /* merah alert */
+  color: #fff;
+  padding: 20px 30px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  z-index: 9999;
+  text-align: center;
+  min-width: 250px;
+}
+
+.custom-alert button {
+  margin-top: 15px;
+  padding: 5px 15px;
+  border: none;
+  background: #fff;
+  color: #ff4d4d;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+
+
+.custom-alert img {
+  display: block;
+  margin: 0 auto 10px auto; /* tengah dan ada jarak ke teks */
+}
+
+
 </style>
 </head>
 <body>
@@ -648,6 +687,12 @@ button.danger:hover{
 
 
 
+<div id="customAlert" class="custom-alert">
+  <img id="customAlertImg" src="gambar.png" alt="Alert Image" style="width:50px;height:50px;margin-bottom:10px;">
+  <span id="customAlertText"></span>
+  <p></p>
+  <button id="customAlertBtn">OK</button>
+</div>
 
 
 
@@ -886,9 +931,10 @@ function tambahMenu(nama, harga){
 }
 
 // ================= SIMPAN ORDER =================
+// ================= SIMPAN ORDER =================
 async function simpanOrder(){
   if(!customer.nama || !customer.meja || total === 0){
-    alert('Lengkapi data pelanggan & pesanan');
+    showCustomAlert('Lengkapi data pelanggan!', 'recheck_pay_order_icon.png');
     return;
   }
 
@@ -913,6 +959,12 @@ async function simpanOrder(){
   customer = { nama:'', meja:'' };
 
   renderMenu();
+
+  // scroll ke span.title
+  const titleEl = document.querySelector('.title');
+  if(titleEl){
+    titleEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
 }
 
 // ================= HAPUS ORDER =================
@@ -1259,15 +1311,15 @@ window.tarikHasil = async function(){
 
   const saldo = totalMasuk - totalTarik;
 
-  if(!jml || jml <= 0){
-    alert('Masukkan jumlah valid');
-    return;
-  }
+if(!jml || jml <= 0){
+  showCustomAlert('Masukkan jumlah valid', 'cert_failed_similar_user.png');
+  return;
+}
 
-  if(jml > saldo){
-    alert('Saldo tidak mencukupi');
-    return;
-  }
+if(jml > saldo){
+  showCustomAlert('Saldo tidak mencukupi', 'certification_award_icon_0_female.png');
+  return;
+}
 
   await addDoc(collection(db,'withdraws'),{
     jumlah: jml,
@@ -1309,19 +1361,16 @@ const PIN_DELETE = '1234';
 
 window.hapusTarik = async function(id){
   const pin = prompt('Masukkan PIN untuk menghapus data');
-
   if(pin === null) return;
 
   if(pin !== PIN_DELETE){
-    alert('PIN salah');
+    showCustomAlert('PIN salah', 'match_locked_icon.png'); // pakai custom alert
     return;
   }
 
   await deleteDoc(doc(db,'withdraws', id));
-  alert('Data penarikan dihapus');
+  showCustomAlert('Data penarikan berhasil dihapus', 'third_acoount_bound_iocn.png'); // custom alert
 };
-
-
 
 
 
@@ -1447,6 +1496,20 @@ initMenuStok();
 
 
 
+function showCustomAlert(message, imgSrc = 'gambar.png'){
+  const alertBox = document.getElementById('customAlert');
+  const alertText = document.getElementById('customAlertText');
+  const alertBtn = document.getElementById('customAlertBtn');
+  const alertImg = document.getElementById('customAlertImg');
+
+  alertText.innerText = message;
+  alertImg.src = imgSrc; // bisa diganti sesuai kebutuhan
+  alertBox.style.display = 'block';
+
+  alertBtn.onclick = () => {
+    alertBox.style.display = 'none';
+  };
+}
 
 
 
