@@ -584,17 +584,15 @@ button.danger:hover{
 <div id="modalStruk" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:99">
   <div style="background:#fff;width:320px;margin:40px auto;padding:14px;border-radius:10px;font-size:12px">
     
-<div class="struk-header">
-  <img src="logokampungcoffe.jpg" class="struk-logo">
-  <div class="struk-title">Kampung Coffe.id</div>
-  <div id="strukTime" class="struk-time"></div>
-  <div class="struk-alamat">
-    Alamat : Dusun Bangunan, Tanjung Putus
-    <p>Padang Tualang</p>
-  </div>
-</div>
-
-
+    <div class="struk-header">
+      <img src="logokampungcoffe.jpg" class="struk-logo">
+      <div class="struk-title">Kampung Coffe.id</div>
+      <div id="strukTime" class="struk-time"></div>
+      <div class="struk-alamat">
+        Alamat : Dusun Bangunan, Tanjung Putus
+        <p>Padang Tualang</p>
+      </div>
+    </div>
 
     <hr>
 
@@ -613,6 +611,7 @@ button.danger:hover{
     </div>
 
     <button class="primary" style="width:100%;margin-top:10px" onclick="tutupStruk()">Tutup</button>
+    <button class="primary" style="width:100%;margin-top:5px" onclick="cetakStruk()">Cetak</button>
   </div>
 </div>
 
@@ -620,7 +619,31 @@ button.danger:hover{
 
 
 
+<!-- Nav Pages -->
+<div id="nav6" class="page">
+  <h3>Promo</h3>
+  <p>Tempat menampilkan semua promo yang sedang berlaku.</p>
+</div>
 
+<div id="nav7" class="page">
+  <h3>Stok</h3>
+  <p>Tempat menampilkan stok menu & bahan baku.</p>
+</div>
+
+<div id="nav8" class="page">
+  <h3>Kasir</h3>
+  <p>Fitur kasir: Catat pesanan, bayar, dan cetak struk.</p>
+</div>
+
+<div id="nav9" class="page">
+  <h3>Pengaturan</h3>
+  <p>Pengaturan akun, printer, dan preferensi aplikasi.</p>
+</div>
+
+<div id="nav10" class="page">
+  <h3>Tentang</h3>
+  <p>Informasi aplikasi, versi, dan developer.</p>
+</div>
 
 
 
@@ -638,7 +661,7 @@ button.danger:hover{
 // ================= FIREBASE =================
 import { deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, addDoc, query, where, onSnapshot, updateDoc, doc, Timestamp, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, collection, addDoc, query, where, onSnapshot, updateDoc, doc,getDocs, Timestamp, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSy....",
@@ -721,6 +744,21 @@ const menuData = [
 
   { name:"Udang Goreng", price:35000, image:"udang.jpeg", category:"seafood" }
 ];
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 let cart = {};
@@ -1114,19 +1152,34 @@ onSnapshot(collection(db,'orders'), snap => {
   totalMasuk = 0;
   let belum = 0;
 
-  snap.forEach(d=>{
-    const o = d.data();
-    if(o.status === 'belum') belum += o.total;
-    if(o.status === 'sudah') totalMasuk += o.total;
-  });
+snap.forEach(d=>{
+  const o = d.data();
+  if(o.status === 'belum') belum += o.total || 0;
+  if(o.status === 'sudah') totalMasuk += o.total || 0;
+});
 
-  document.getElementById('analisis').innerHTML = `
-    <h3>Analisis</h3>
-    <p>Belum Bayar: Rp${belum.toLocaleString()}</p>
-    <p>Sudah Bayar: Rp${totalMasuk.toLocaleString()}</p>
-  `;
+// Render Analisis Profesional
+document.getElementById('analisis').innerHTML = `
+  <div id="analisisBox" class="uang-box">
+    <h3 style="margin-top:0; margin-bottom:10px; font-size:16px; letter-spacing:1px;">
+      Analisis Transaksi
+    </h3>
 
-  renderUang();
+    <div class="uang-row">
+      <span>Total Belum Bayar</span>
+      <b id="belumBayar">Rp${belum.toLocaleString()}</b>
+    </div>
+
+    <div class="uang-row">
+      <span>Total Sudah Bayar</span>
+      <b id="sudahBayar">Rp${totalMasuk.toLocaleString()}</b>
+    </div>
+
+  </div>
+`;
+
+renderUang();
+
 });
 
 
@@ -1276,14 +1329,135 @@ window.hapusTarik = async function(id){
 
 
 
-
-
-
-
-
-
-
 renderMenu();
+
+
+const pagesContent = {
+  nav6: '<p>Semua promo terbaru akan ditampilkan di sini.</p>',
+  nav7: '<p>Stok menu dan bahan baku dapat dipantau di sini.</p>',
+  nav8: '<p>Fitur kasir aktif: Catat pesanan & bayar.</p>',
+  nav9: '<p>Atur preferensi aplikasi dan akun di sini.</p>',
+  nav10: '<p>Informasi versi dan developer.</p>'
+};
+
+Object.keys(pagesContent).forEach(id=>{
+  const el = document.getElementById(id);
+  if(el) el.innerHTML = `<h3>${navs.find(n=>n[0]===id)[1]}</h3>` + pagesContent[id];
+});
+
+
+
+
+
+
+// buat stok default jika belum ada
+// ================= MENU & STOK FIREBASE =================
+
+// stok default jika belum ada di Firebase
+async function initMenuStok() {
+  const snap = await getDocs(collection(db,'menu'));
+  if(snap.empty){
+    menuData.forEach(async m => {
+      await addDoc(collection(db,'menu'), {
+        name: m.name,
+        price: m.price,
+        image: m.image,
+        stok: 10
+      });
+    });
+  }
+}
+
+// render halaman Stok
+// render halaman Stok
+function renderStok(menuDataFirebase){
+  const stokEl = document.getElementById('nav7');
+  stokEl.innerHTML = `<h3>Stok Menu</h3>
+    <div class="grid" id="stokGrid"></div>
+  `;
+
+  const grid = document.getElementById('stokGrid');
+  grid.innerHTML = '';
+
+  menuDataFirebase.forEach(item => {
+    const box = document.createElement('div');
+    box.className = 'item';
+    box.innerHTML = `
+      <img src="${item.image}" alt="${item.name}">
+      <div class="name">${item.name}</div>
+      <div class="price">Rp ${item.price.toLocaleString()}</div>
+      <div>Stok: <span id="stok-${item.id}">${item.stok}</span></div>
+      <button id="tambah-${item.id}">+</button>
+      <button id="kurang-${item.id}">-</button>
+    `;
+    grid.appendChild(box);
+
+    // tombol tambah stok
+    document.getElementById(`tambah-${item.id}`).onclick = async () => {
+      const docRef = doc(db,'menu',item.id);
+      const newStok = item.stok + 1;
+      await updateDoc(docRef, { stok: newStok });
+      item.stok = newStok; // update lokal
+    };
+
+    // tombol kurangi stok
+    document.getElementById(`kurang-${item.id}`).onclick = async () => {
+      if(item.stok <= 0) return; // jangan minus
+      const docRef = doc(db,'menu',item.id);
+      const newStok = item.stok - 1;
+      await updateDoc(docRef, { stok: newStok });
+      item.stok = newStok; // update lokal
+    };
+  });
+}
+
+// ================= LOAD DATA FIREBASE =================
+onSnapshot(collection(db,'menu'), snap => {
+  const menuDataFirebase = [];
+  snap.docs.forEach(d => {
+    menuDataFirebase.push({ id: d.id, ...d.data() });
+  });
+
+  renderStok(menuDataFirebase);
+});
+
+// ================= KURANG STOK DARI ORDER =================
+onSnapshot(
+  query(collection(db,'orders'), where('status','==','sudah')),
+  snap => {
+    snap.docs.forEach(async d => {
+      const o = d.data();
+      for(const i of o.items){
+        const menuSnap = await getDocs(query(collection(db,'menu'), where('name','==',i.nama)));
+        menuSnap.forEach(async mDoc => {
+          const docRef = doc(db,'menu',mDoc.id);
+          const newStok = mDoc.data().stok - i.qty;
+          await updateDoc(docRef, { stok: newStok < 0 ? 0 : newStok });
+        });
+      }
+    });
+  }
+);
+
+// ================= INISIALISASI =================
+initMenuStok();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </script>
 </body>
 </html>
