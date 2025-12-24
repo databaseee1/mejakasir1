@@ -439,6 +439,15 @@ button.danger:hover{
 
 
 
+.badge{
+  background: red;
+  color: #fff;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 12px;
+  margin-left: 6px;
+}
 
 
 
@@ -568,24 +577,49 @@ const db = getFirestore(app);
 
 // ================= NAV =================
 const navs=[
- ['menu','Menu'],['belum','Belum Bayar'],['sudah','Sudah Bayar'],['analisis','Analisis'],['uang','Uang Masuk'],
- ['nav6','Promo'],['nav7','Stok'],['nav8','Kasir'],['nav9','Pengaturan'],['nav10','Tentang']
+  ['menu','Menu'],
+  ['belum','Belum Bayar'],
+  ['sudah','Sudah Bayar'],
+  ['analisis','Analisis'],
+  ['uang','Uang Masuk'],
+  ['nav6','Promo'],
+  ['nav7','Stok'],
+  ['nav8','Kasir'],
+  ['nav9','Pengaturan'],
+  ['nav10','Tentang']
 ];
-const navEl=document.getElementById('nav');
-navs.forEach((n,i)=>{
- const d=document.createElement('div');
- d.innerText=n[1];
- d.onclick=()=>showPage(n[0],d);
- if(i==0)d.classList.add('active');
- navEl.appendChild(d);
-});
 
-function showPage(id,el){
- document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
- document.getElementById(id).classList.add('active');
- document.querySelectorAll('nav div').forEach(n=>n.classList.remove('active'));
- el.classList.add('active');
+const navEl = document.getElementById('nav');
+
+function renderNav(jumlahBelum=0){
+  navEl.innerHTML = ''; // bersihkan dulu
+
+  navs.forEach((n,i)=>{
+    const d = document.createElement('div');
+    d.onclick = () => showPage(n[0], d);
+
+    // jika nav 'belum' tambahkan badge jumlah
+    if(n[0] === 'belum' && jumlahBelum > 0){
+      d.innerHTML = `${n[1]} <span class="badge">${jumlahBelum}</span>`;
+    } else {
+      d.innerText = n[1];
+    }
+
+    if(i==0) d.classList.add('active');
+    navEl.appendChild(d);
+  });
 }
+
+// ================= SWITCH PAGE =================
+function showPage(id, el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('#nav div').forEach(n=>n.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// panggil awal
+renderNav();
 
 // ================= MENU & CART =================
 // ================= MENU & CART =================
@@ -785,24 +819,37 @@ let bayarTotal = 0;
 // ================= BELUM BAYAR =================
 // ================= BELUM BAYAR =================
 onSnapshot(
- query(collection(db,'orders'), where('status','==','belum')),
- snap=>{
-  const b = document.getElementById('belum');
-  b.innerHTML = '<h3>Belum Bayar</h3>';
+  query(collection(db,'orders'), where('status','==','belum')),
+  snap => {
+    const b = document.getElementById('belum');
 
-  snap.docs.slice().reverse().forEach(d=>{
-   const o = d.data();
-   b.innerHTML += `
-     <div class="row">
-      <span onclick='bukaBayar(${JSON.stringify({...o, id:d.id})})'>
-         ${o.nama} - Meja ${o.meja}
-         <b>Rp${o.total}</b>
-       </span>
-       <button class="danger" onclick="hapusOrder('${d.id}')">🗑</button>
-     </div>
-   `;
-  });
- }
+    // Hitung total belum bayar
+    const totalBelumBayar = snap.docs.reduce((sum, d) => sum + (d.data().total || 0), 0);
+    const jumlahBelum = snap.docs.length; // jumlah order belum bayar
+
+    // Header dengan total & jumlah belum bayar
+    b.innerHTML = `
+      <h3>Belum Bayar</h3>
+      <p>Total Belum Bayar: <b style="color:red">Rp${totalBelumBayar.toLocaleString()}</b></p>
+    `;
+
+    // Render daftar order
+    snap.docs.slice().reverse().forEach(d => {
+      const o = d.data();
+      b.innerHTML += `
+        <div class="row">
+          <span onclick='bukaBayar(${JSON.stringify({...o, id:d.id})})'>
+            ${o.nama} - Meja ${o.meja} 
+            <b>Rp${o.total.toLocaleString()}</b>
+          </span>
+          <button class="danger" onclick="hapusOrder('${d.id}')">🗑</button>
+        </div>
+      `;
+    });
+
+    // Opsional: update badge navigasi
+    if(typeof renderNav === 'function') renderNav(jumlahBelum);
+  }
 );
 
 
